@@ -8,7 +8,7 @@ from sklearn.preprocessing import LabelEncoder as LE, OneHotEncoder as OHE
 
 # read
 input_data = pd.read_csv('data analytics 154.csv',encoding="utf-8")
-print(input_data)
+#print(input_data)
 
 #提取CSV檔 標籤
 input_data_column = list(input_data.columns.values)
@@ -29,14 +29,20 @@ print(pd.DataFrame(label))
 mv = SI(missing_values=np.NaN, strategy='median')
 mv.fit(data[:,2:5])
 data[:,2:5] = mv.transform(data[:,2:5])
-print(pd.DataFrame(data))
-print(pd.DataFrame(label))
+#print(pd.DataFrame(data))
+#print(pd.DataFrame(label))
 
+# to lowercase 
+for i in range(len(data[:,0])):
+    data[i,0] = data[i,0].lower()
+print(data[:,0])
 
 # str to value
-data_enc = LE()
+#data_enc = LE()
+data_enc = np.full(8, None)
 for i in [0,5,6,7]:
-    data[:,i] = data_enc.fit_transform(data[:,i])
+    data_enc[i] = LE()
+    data[:,i] = data_enc[i].fit_transform(data[:,i])
 ohe_enc = OHE(categorical_features=[0])
 #data = ohe_enc.fit_transform(data).toarray()
 #data = data.astype(int)
@@ -45,7 +51,6 @@ print(pd.DataFrame(data))
 label_enc = LE()
 label = label_enc.fit_transform(label)
 print(pd.DataFrame(label))
-
 
 import numpy as np
 import pandas as pd
@@ -61,7 +66,7 @@ from sklearn import preprocessing
 x = data   #提取權重較重的資料
 y = label
 x = preprocessing.scale(x)
-print(pd.DataFrame(x))
+#print(pd.DataFrame(x))
 
 
 y_median = np.median(pd.DataFrame(set(y)))      #計算y資料的中位數
@@ -70,8 +75,8 @@ for i in range(len(y)):                         #以中位數把y資料切成0,1
         y[i] = 1
     else:
         y[i] = 0
-print(x)        
-print(y)
+#print(x)        
+#print(y)
 
 knn = KNeighborsClassifier(n_neighbors=4)      #用KNN分類法,尋找4個鄰居
 cv = ShuffleSplit(n_splits=10, test_size=0.4)   # K為10，將資料分成train,test
@@ -84,12 +89,12 @@ X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.4)    #將
 knn = KNeighborsClassifier(n_neighbors=4)      #用KNN分類法,尋找4個鄰居
 knn.fit(X_train, y_train)                       #資料訓練
 y_predict = knn.predict(X_test)                 #訓練出來的資料
-y_pred_proba = knn.predict_proba(X_test)[:,1]   #訓練出來的資料
+y_pred_proba = knn.predict_proba(X_test)[:,1]   #訓練出來的資料 
 
 print("accuracy score:", accuracy_score(y_test, y_predict))     #計算模型準確度
-cm_plot(y_test, y_predict)      #計算混淆矩陣
+#cm_plot(y_test, y_predict)      #計算混淆矩陣
 print('----------------------------------')
-
+'''
 acu_curve(y_test, y_pred_proba) #KNN計算真正率 & 假正率
 print('----------------------------------')
 
@@ -97,7 +102,7 @@ svm = svm.SVC(kernel='linear', probability=True)
 y_score = svm.fit(X_train, y_train).decision_function(X_test)
 acu_curve(y_test, y_score)      #SVM計算真正率 & 假正率
 print('----------------------------------')
-
+'''
 #尋找鄰居最好的K值
 #k_range = range(1,50)
 #k_scores = []
@@ -109,3 +114,16 @@ print('----------------------------------')
 #plt.xlabel('Value of K for KNN')
 #plt.ylabel('Cross-Validated Accuracy')
 #plt.show()
+
+ctData = np.full((1,8), None)
+print('pleace enter your scoer.')
+for i in range(len(data_column)):
+    ctData[0,i] = input(data_column[i]+ ' : ')
+print(ctData)
+for i in [0,5,6,7]:
+    ctData[:,i] = data_enc[i].transform(ctData[:,i])
+#print(ctData)
+
+y_predict = knn.predict(ctData)
+print(label_enc.inverse_transform(y_predict))
+

@@ -6,6 +6,20 @@ from sklearn.impute import SimpleImputer as SI
 from sklearn.linear_model import LinearRegression as LR 
 from sklearn.preprocessing import LabelEncoder as LE, OneHotEncoder as OHE
 from sklearn import preprocessing
+from sklearn.metrics import mean_squared_error, r2_score
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn import svm
+from sklearn.model_selection import train_test_split, cross_val_score, ShuffleSplit
+from sklearn.metrics.classification import accuracy_score
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.datasets import load_boston
+from sklearn import preprocessing
+from subroutine.CMatrix import cm_plot     #副程式
+from subroutine.ROC_AUC import acu_curve   #副程式
+
 
 # read
 input_data = pd.read_csv('data\\data analytics 154.csv',encoding="utf-8")
@@ -48,9 +62,12 @@ ohe_enc = OHE(categorical_features=[0])
 #data = ohe_enc.fit_transform(data).toarray()
 #data = data.astype(int)
 
+# 正規化
+'''
 for i in range(8):
     data[:,i] = preprocessing.scale(data[:,i])
-print(pd.DataFrame(data))
+'''
+#print(data ,pd.DataFrame(data))
 
 # str get int
 for i in range(len(label)):
@@ -59,25 +76,16 @@ for i in range(len(label)):
     elif(label[i].find('outside top ') != -1):
         label[i] = label[i].replace('outside top ', '50')
     label[i] = int(label[i])
-#print('str get int', label)
-'''
+
 # str to value
+'''
 label_enc = LE()
 label = label_enc.fit_transform(label)
 print(pd.DataFrame(label))
 '''
+#print('label', label)
 
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-from sklearn import svm
-from sklearn.model_selection import train_test_split, cross_val_score, ShuffleSplit
-from sklearn.metrics.classification import accuracy_score
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.datasets import load_boston
-from subroutine.CMatrix import cm_plot     #副程式
-from subroutine.ROC_AUC import acu_curve   #副程式
-from sklearn import preprocessing
+# KNN
 '''
 x = data   #提取權重較重的資料
 y = label
@@ -137,7 +145,7 @@ print('----------------------------------')
 regs = LR()
 regs.fit(data, label)
 
-# 測試6月份資料
+# 測試資料
 result = regs.predict(data)
 
 # 驗證100比
@@ -151,24 +159,24 @@ resultSqu = result.reshape(-1, 1)
 
 for i in range(len(label)):
     print(label[i], result[i])
-
-from sklearn.metrics import mean_squared_error, r2_score
 print("score:", r2_score(label, result.round()))    #計算模型準確度
-'''
+
 while 1:
     # 使用者輸入資料
     ctData = np.full((1,8), None)
-    print('pleace enter your scoer.')
+    print()
+    print('pleace enter your score...')
     for i in range(len(data_column)):
         ctData[0,i] = input(data_column[i]+ ' : ')
-    print(ctData)
+    #print(ctData)
     for i in [0,5,6,7]:
         ctData[:,i] = data_enc[i].transform(ctData[:,i]) # str to int
     #print(ctData)
-'''
-'''
+
+
     # 即時預測
-    y_predict = knn.predict(ctData) # int to str
-    #print(label_enc.inverse_transform(y_predict))
-    print(y_predict)
-'''
+    # 測試資料
+    ctresult = regs.predict(ctData)
+    print('School ranking: Top', ctresult[0].round())
+    print()
+

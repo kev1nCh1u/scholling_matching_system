@@ -35,7 +35,7 @@ data[:,2:5] = mv.transform(data[:,2:5])
 # to lowercase 
 for i in range(len(data[:,0])):
     data[i,0] = data[i,0].lower()
-print(data[:,0])
+#print(data[:,0])
 
 # str to value
 #data_enc = LE()
@@ -68,7 +68,7 @@ y = label
 x = preprocessing.scale(x)
 #print(pd.DataFrame(x))
 
-
+'''
 y_median = np.median(pd.DataFrame(set(y)))      #計算y資料的中位數
 for i in range(len(y)):                         #以中位數把y資料切成0,1
     if y[i] > y_median:
@@ -77,7 +77,7 @@ for i in range(len(y)):                         #以中位數把y資料切成0,1
         y[i] = 0
 #print(x)        
 #print(y)
-
+'''
 knn = KNeighborsClassifier(n_neighbors=4)      #用KNN分類法,尋找4個鄰居
 cv = ShuffleSplit(n_splits=10, test_size=0.4)   # K為10，將資料分成train,test
 scores_clf_svc_cv = cross_val_score(knn, x, y, cv=cv, scoring='accuracy')
@@ -115,15 +115,23 @@ print('----------------------------------')
 #plt.ylabel('Cross-Validated Accuracy')
 #plt.show()
 
-ctData = np.full((1,8), None)
-print('pleace enter your scoer.')
-for i in range(len(data_column)):
-    ctData[0,i] = input(data_column[i]+ ' : ')
-print(ctData)
-for i in [0,5,6,7]:
-    ctData[:,i] = data_enc[i].transform(ctData[:,i])
-#print(ctData)
+y_predict = knn.predict(data)
+print(pd.DataFrame(label_enc.inverse_transform(y_predict)))
+print(pd.DataFrame(label))
+print(pd.DataFrame(label_enc.inverse_transform(label)))
 
-y_predict = knn.predict(ctData)
-print(label_enc.inverse_transform(y_predict))
+while 1:
+    # 使用者輸入資料
+    ctData = np.full((1,8), None)
+    print('pleace enter your scoer.')
+    for i in range(len(data_column)):
+        ctData[0,i] = input(data_column[i]+ ' : ')
+    print(ctData)
+    for i in [0,5,6,7]:
+        ctData[:,i] = data_enc[i].transform(ctData[:,i]) # str to int
+    #print(ctData)
+
+    # 即時預測
+    y_predict = knn.predict(ctData) # int to str
+    print(label_enc.inverse_transform(y_predict))
 

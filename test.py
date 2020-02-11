@@ -18,3 +18,8 @@ print(le.transform(['ggg']))
 
 b = ['SFASFAF', 'A']
 print(b[0].lower())
+
+a=[1,2,3]
+b=a
+b[0]=2
+print(a)

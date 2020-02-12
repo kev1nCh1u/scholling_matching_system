@@ -75,7 +75,7 @@ for i in range(len(label)):
         label[i] = label[i].replace('Top ', '')
     elif(label[i].find('outside top ') != -1):
         label[i] = label[i].replace('outside top ', '50')
-    label[i] = int(label[i])
+    #label[i] = int(label[i])
 
 # str to value
 '''
@@ -126,8 +126,7 @@ svm = svm.SVC(kernel='linear', probability=True)
 y_score = svm.fit(X_train, y_train).decision_function(X_test)
 acu_curve(y_test, y_score)      #SVM計算真正率 & 假正率
 print('----------------------------------')
-'''
-'''
+
 #尋找鄰居最好的K值
 #k_range = range(1,50)
 #k_scores = []
@@ -139,14 +138,6 @@ print('----------------------------------')
 #plt.xlabel('Value of K for KNN')
 #plt.ylabel('Cross-Validated Accuracy')
 #plt.show()
-'''
-
-# 訓練並擬合後測試
-regs = LR()
-regs.fit(data, label)
-
-# 測試資料
-result = regs.predict(data)
 
 # 驗證100比
 #y_predict = knn.predict(data)
@@ -154,13 +145,53 @@ result = regs.predict(data)
 #print(pd.DataFrame(label_enc.inverse_transform(label)))
 #print(pd.DataFrame(result))
 #print(pd.DataFrame(label))
+'''
+
+# 線性回歸
+'''
+regs = LR() # 訓練並擬合後測試
+regs.fit(data, label)
+
+result = regs.predict(data) # 測試資料
+
+# 驗證100比
 labelSqu = label.reshape(-1, 1)
 resultSqu = result.reshape(-1, 1)
-
 for i in range(len(label)):
     print(label[i], result[i])
-print("score:", r2_score(label, result.round()))    #計算模型準確度
+print("score:", r2_score(label, result.round())) #計算模型擬和度
 
+# 圖表
+#plt.bar(range(20), label[:20], label = 'data', align = "edge", width = -0.35)
+#plt.bar(range(20), result[:20].round(), label = 'predict', align = "edge", width = 0.35)
+#plt.legend()
+#plt.show()
+'''
+
+# 決策樹
+Train_D, Test_D, Train_L, Test_L = train_test_split(data ,label ,test_size = 0.3, random_state = 0)
+from sklearn.tree import DecisionTreeClassifier as DTC
+treeModel = DTC(criterion='entropy', random_state=0)
+treeModel.fit(data, label)
+pred = treeModel.predict(data)
+print('tree')
+for i in range(len(label)):
+    print(label[i], pred[i])
+
+from sklearn import metrics
+accuracy = metrics.accuracy_score(label, pred)
+print('accuracy:', accuracy)
+print("score:", r2_score(label, pred)) #計算模型擬和度
+
+# 圖表
+plt.bar(range(20), label[:20], label = 'data', align = "edge", width = -0.35)
+plt.bar(range(20), pred[:20], label = 'predict', align = "edge", width = 0.35)
+plt.legend()
+plt.show()
+
+
+
+'''
 while 1:
     # 使用者輸入資料
     ctData = np.full((1,8), None)
@@ -180,3 +211,4 @@ while 1:
     print('School ranking: Top', ctresult[0].round())
     print()
 
+'''

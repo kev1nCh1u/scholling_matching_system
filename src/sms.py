@@ -184,14 +184,14 @@ print('accuracy:', accuracy)
 print("score:", r2_score(label, pred)) #計算模型擬和度
 
 # 圖表
-plt.bar(range(20), label[:20], label = 'data', align = "edge", width = -0.35)
-plt.bar(range(20), pred[:20], label = 'predict', align = "edge", width = 0.35)
-plt.legend()
-plt.show()
+#plt.bar(range(20), label[:20], label = 'data', align = "edge", width = -0.35)
+#plt.bar(range(20), pred[:20], label = 'predict', align = "edge", width = 0.35)
+#plt.legend()
+#plt.show()
 
 
 
-'''
+
 while 1:
     # 使用者輸入資料
     ctData = np.full((1,8), None)
@@ -207,8 +207,7 @@ while 1:
 
     # 即時預測
     # 測試資料
-    ctresult = regs.predict(ctData)
-    print('School ranking: Top', ctresult[0].round())
+    ctresult = treeModel.predict(ctData)
+    print('School ranking: Top', ctresult[0])
     print()
 
-'''

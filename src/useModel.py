@@ -7,7 +7,7 @@ study_enc = pickle.load(open('model/study_enc_model.sav', 'rb'))
 biography_enc = pickle.load(open('model/biography_enc_model.sav', 'rb'))
 treeModel = pickle.load(open('model/tree_model.sav', 'rb'))
 
-while 0:
+while 1:
     # 使用者輸入資料
     ctData = np.full((1,8), None)
     print()
@@ -22,16 +22,35 @@ while 0:
     for i in [0,5,6,7]:
         ctData[:,i] = data_enc[i].transform(ctData[:,i]) # str to int
     '''
-    ctData[:,0] = level_enc.transform(ctData[:,0])
-    ctData[:,5] = activitve_enc.transform(ctData[:,5])
-    ctData[:,6] = study_enc.transform(ctData[:,6])
-    ctData[:,7] = biography_enc.transform(ctData[:,7])
+    try:
+        ctData[:,0] = level_enc.transform(ctData[:,0])
+    except:
+        print("!!! level not right !!!")
+        continue
+    try:
+        ctData[:,5] = activitve_enc.transform(ctData[:,5])
+    except:
+        print("!!! activitve not right !!!")
+        continue
+    try:
+        ctData[:,6] = study_enc.transform(ctData[:,6])
+    except:
+        print("!!! study not right !!!")
+        continue
+    try:
+        ctData[:,7] = biography_enc.transform(ctData[:,7])
+    except:
+        print("!!! biography not right !!!")
+        continue
     #print(ctData)
-
 
     # 即時預測
     # 測試資料
-    ctresult = treeModel.predict(ctData)
+    try:
+        ctresult = treeModel.predict(ctData)
+    except:
+        print("!!! error !!!")
+        continue
     print('School ranking: Top', ctresult[0])
     print()
 

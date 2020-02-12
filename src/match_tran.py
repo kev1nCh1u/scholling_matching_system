@@ -7,6 +7,8 @@ from sklearn.linear_model import LinearRegression as LR
 from sklearn.preprocessing import LabelEncoder as LE, OneHotEncoder as OHE
 from sklearn import preprocessing
 from sklearn.metrics import mean_squared_error, r2_score
+import pickle
+import sys
 
 import numpy as np
 import pandas as pd
@@ -40,6 +42,7 @@ label = input_data.iloc[:,1].values
 print(pd.DataFrame(data))
 print(pd.DataFrame(label))
 
+# data Preprocessing data ===================================================
 # Missing Value nan
 mv = SI(missing_values=np.NaN, strategy='median')
 mv.fit(data[:,2:5])
@@ -51,8 +54,8 @@ data[:,2:5] = mv.transform(data[:,2:5])
 for i in range(len(data[:,0])):
     data[i,0] = data[i,0].lower()
 #print(data[:,0])
-
-# str to value
+'''
+# Encoding loop
 #data_enc = LE()
 data_enc = np.full(8, None)
 for i in [0,5,6,7]:
@@ -61,14 +64,32 @@ for i in [0,5,6,7]:
 ohe_enc = OHE(categorical_features=[0])
 #data = ohe_enc.fit_transform(data).toarray()
 #data = data.astype(int)
+print(data ,pd.DataFrame(data))
+'''
+# Encoding
+level_enc = LE()
+activitve_enc = LE()
+study_enc = LE()
+biography_enc = LE()
+data[:,0] = level_enc.fit_transform(data[:,0])
+data[:,5] = activitve_enc.fit_transform(data[:,5])
+data[:,6] = study_enc.fit_transform(data[:,6])
+data[:,7] = biography_enc.fit_transform(data[:,7])
+print(data ,pd.DataFrame(data))
+# 輸出模型
+pickle.dump(level_enc, open('model/level_enc_model.sav', 'wb'))
+pickle.dump(activitve_enc, open('model/activitve_enc_model.sav', 'wb'))
+pickle.dump(study_enc, open('model/study_enc_model.sav', 'wb'))
+pickle.dump(biography_enc, open('model/biography_enc_model.sav', 'wb'))
 
 # 正規化
 '''
 for i in range(8):
     data[:,i] = preprocessing.scale(data[:,i])
-'''
 #print(data ,pd.DataFrame(data))
+'''
 
+# label Preprocessing data ===================================================
 # str get int
 for i in range(len(label)):
     if(label[i].find('Top ') != -1):
@@ -85,7 +106,7 @@ print(pd.DataFrame(label))
 '''
 #print('label', label)
 
-# KNN
+# KNN ===============================================================
 '''
 x = data   #提取權重較重的資料
 y = label
@@ -147,7 +168,7 @@ print('----------------------------------')
 #print(pd.DataFrame(label))
 '''
 
-# 線性回歸
+# 線性回歸 =======================================================================
 '''
 regs = LR() # 訓練並擬合後測試
 regs.fit(data, label)
@@ -168,7 +189,7 @@ print("score:", r2_score(label, result.round())) #計算模型擬和度
 #plt.show()
 '''
 
-# 決策樹
+# 決策樹 ================================================================================
 Train_D, Test_D, Train_L, Test_L = train_test_split(data ,label ,test_size = 0.3, random_state = 0)
 from sklearn.tree import DecisionTreeClassifier as DTC
 treeModel = DTC(criterion='entropy', random_state=0)
@@ -189,10 +210,12 @@ print("score:", r2_score(label, pred)) #計算模型擬和度
 #plt.legend()
 #plt.show()
 
+# 輸出模型
+pickle.dump(treeModel, open('model/tree_model.sav', 'wb'))
 
 
-
-while 1:
+# input ==========================================================================
+while 0:
     # 使用者輸入資料
     ctData = np.full((1,8), None)
     print()

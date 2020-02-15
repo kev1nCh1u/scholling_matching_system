@@ -15,7 +15,7 @@ while 1:
     data_column = ['Level of Study', 'GPA', 'TOEIC', 'HSK', 'TOCFL', 'Activitve Certificate', 'Study Plan', 'Autobiography']
     for i in range(len(data_column)):
         ctData[0,i] = input(data_column[i]+ ' : ')
-    #print(ctData)
+    print(ctData)
 
     # encoding
     '''
